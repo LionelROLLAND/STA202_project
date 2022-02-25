@@ -21,7 +21,13 @@ unpackk=function(dat) {
 }
 
 unpackk2=function(dat) {
-  annee = as.character()
+  annee = as.character(dat$an)
+  time = dat$hrmn
+  str_date = paste(dat$jour, dat$mois, annee, sep="/")
+  str_datetime = paste(str_date, time, sep=" ")
+  data_datetime = strptime(str_datetime, format="%d/%m/%Y %H:%M")
+  dat$date = data_datetime
+  return(dat)
 }
 
 data_2005 = read.csv("caracteristiques_2005.csv")
@@ -49,9 +55,16 @@ curr_dat = rbind(curr_dat, data_2014, data_2015, data_2016, data_2017)
 
 curr_dat = rbind(curr_dat, data_2018)
 
-curr_dat = subset(curr_dat, select = -gps)
+curr_dat = unpackk(curr_dat)
 
-#data_2019, data_2020)
+curr_dat = subset(curr_dat, select = -c(gps, an, mois, jour, hrmn))
+
+curr_dat2 = rbind(data_2019, data_2020)
+curr_dat2 = unpackk2(curr_dat2)
+
+curr_dat2 = subset(curr_dat2, select = -c(an, mois, jour, hrmn))
+
+f_dat = rbind(curr_dat, curr_dat2)
 
 
 
