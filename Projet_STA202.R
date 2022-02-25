@@ -20,6 +20,10 @@ unpackk=function(dat) {
   return(dat)
 }
 
+unpackk2=function(dat) {
+  annee = as.character()
+}
+
 data_2005 = read.csv("caracteristiques_2005.csv")
 data_2006 = read.csv("caracteristiques_2006.csv")
 data_2007 = read.csv("caracteristiques_2007.csv")
