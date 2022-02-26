@@ -1,4 +1,4 @@
-setwd("~/Documents/ENSTA/Cours/2A/STA202/Projet/BDD/")
+setwd("~/.STA202_BDD/")
 
 tFun=function(x) {
   #print(x$an)
