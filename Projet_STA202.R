@@ -66,6 +66,30 @@ curr_dat2 = subset(curr_dat2, select = -c(an, mois, jour, hrmn))
 
 f_dat = rbind(curr_dat, curr_dat2)
 
+str_days = format(f_dat$date, "%d/%m/%Y")
+
+#days = strptime(str_days, "%d/%m/%Y", tz="CEST")
+
+acc_pday = tapply(f_dat$Num_Acc, as.factor(str_days), length)
+
+days = names(acc_pday)
+days = strptime(days, "%d/%m/%Y")
+
+acc_pday = acc_pday[order(days)]
+
+days = days[order(days)]
+
+plot(days, acc_pday, type="l")
 
 
+filter_s = strptime("01/01/2020", "%d/%m/%Y")
+filter_e = strptime("31/12/2020", "%d/%m/%Y")
+cond = (days >= filter_s & days <= filter_e)
+s_days = subset(days, cond)
+s_acc = subset(acc_pday, cond)
+#plot(s_days, s_acc, type="l", lab=c(5, 5, 7), cex.axis=0.5)
+plot(s_days, s_acc, type="l", cex.axis=0.5)
 
+#weekdays(s_days)
+#test_day = strptime("28/03/2005", "%d/%m/%Y")
+#weekdays(test_day)
