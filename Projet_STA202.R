@@ -1,4 +1,4 @@
-setwd("~/.STA202_BDD/")
+setwd("~/.STA202_BDD/STA202_project/BDD/")
 
 tFun=function(x) {
   #print(x$an)
