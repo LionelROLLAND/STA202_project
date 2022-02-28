@@ -142,12 +142,17 @@ s_days = subset(days, cond)
 s_acc_grav = subset(acc_grav_pday, cond)
 s_acc_lege = subset(acc_lege_pday, cond)
 #plot(s_days, s_acc, type="l", lab=c(5, 5, 7), cex.axis=0.5)
-plot(s_days, s_acc_grav, type="l", cex.axis=0.5)
-plot(s_days, s_acc_lege, type="l", cex.axis=0.5)
+
+plot(s_days, s_acc_lege, type="l", cex.axis=0.5,ylim=c(50,650),col="darkgreen")
+lines(s_days, s_acc_grav, type="l", cex.axis=0.5,col="red")
 #weekdays(s_days)
 #test_day = strptime("28/03/2005", "%d/%m/%Y")
 #weekdays(test_day)
 
+###
+reg=lm(acc_grav_pday~acc_lege_pday)
+summary(reg)
+###
 
 saveRDS(acc_grav_pday,file="acc_grav_pday.rds")
 saveRDS(acc_lege_pday,file="acc_lege_pday.rds")
