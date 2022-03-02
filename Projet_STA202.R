@@ -109,7 +109,7 @@ curr_dat2 = subset(curr_dat2, select = c(Num_Acc,grav,date))# -c(an, mois, jour,
 f_dat = rbind(curr_dat, curr_dat2)
 
 ###
-f_grav = subset(f_dat,(grav==2|grav==3))
+f_grav = subset(f_dat,(grav==2))
 f_lege = subset(f_dat,(grav==1|grav==4))
 ###
 
@@ -134,25 +134,20 @@ lines(days, acc_grav_pday, type="l",col="red")
 lines(days, acc_lege_pday, type="l",col="darkgreen")
 
 
-filter_s = strptime("01/01/2020", "%d/%m/%Y")
-filter_e = strptime("31/12/2020", "%d/%m/%Y")
+filter_s = strptime("01/01/2017", "%d/%m/%Y")
+filter_e = strptime("31/12/2017", "%d/%m/%Y")
 cond = (days >= filter_s & days <= filter_e)
 s_days = subset(days, cond)
 
 s_acc_grav = subset(acc_grav_pday, cond)
 s_acc_lege = subset(acc_lege_pday, cond)
 #plot(s_days, s_acc, type="l", lab=c(5, 5, 7), cex.axis=0.5)
-
-plot(s_days, s_acc_lege, type="l", cex.axis=0.5,ylim=c(50,650),col="darkgreen")
-lines(s_days, s_acc_grav, type="l", cex.axis=0.5,col="red")
+plot(s_days, s_acc_grav, type="l", cex.axis=0.5)
+plot(s_days, s_acc_lege, type="l", cex.axis=0.5)
 #weekdays(s_days)
 #test_day = strptime("28/03/2005", "%d/%m/%Y")
 #weekdays(test_day)
 
-###
-reg=lm(acc_grav_pday~acc_lege_pday)
-summary(reg)
-###
 
 saveRDS(acc_grav_pday,file="acc_grav_pday.rds")
 saveRDS(acc_lege_pday,file="acc_lege_pday.rds")
