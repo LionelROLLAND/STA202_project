@@ -106,10 +106,35 @@ curr_dat2 = unpackk2(curr_dat2)
 
 curr_dat2 = subset(curr_dat2, select = c(Num_Acc,grav,date))# -c(an, mois, jour, hrmn))
 
+###
+
+f_grav2 = subset(curr_dat2,(grav==2|grav==3))
+f_lege2 = subset(curr_dat2,(grav==1|grav==4))
+
+str_grav_days2 = format(f_grav2$date, "%d/%m/%Y")
+str_lege_days2 = format(f_lege2$date, "%d/%m/%Y")
+
+acc_grav_pday2 = tapply(f_grav2$Num_Acc, as.factor(str_grav_days2), length)
+acc_lege_pday2 = tapply(f_lege2$Num_Acc, as.factor(str_lege_days2), length)
+
+days2 = names(acc_grav_pday2)
+days2 = strptime(days2, "%d/%m/%Y")
+
+acc_grav_pday2 = acc_grav_pday2[order(days2)]
+acc_lege_pday2 = acc_lege_pday2[order(days2)]
+
+days2 = days[order(days2)]
+
+saveRDS(acc_grav_pday2,file="acc_grav_pday2.rds")
+saveRDS(acc_lege_pday2,file="acc_lege_pday2.rds")
+saveRDS(days2,file="days2.rds")
+
+###
+
 f_dat = rbind(curr_dat, curr_dat2)
 
 ###
-f_grav = subset(f_dat,(grav==2))
+f_grav = subset(f_dat,(grav==2|grav==3))
 f_lege = subset(f_dat,(grav==1|grav==4))
 ###
 
