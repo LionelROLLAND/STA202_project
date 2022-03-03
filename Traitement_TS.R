@@ -26,12 +26,12 @@ Date_1820=seq.POSIXt(date2,date3, by = "day")
 
 ##TS
 acc_grav_ts=xts(acc_grav_pday,order.by=Date)
-acc_grav_ts_0517=acc_grav_ts[Date_0517,]
-acc_grav_ts_1820=acc_grav_ts[Date_1820,]
+acc_grav_ts_0517=xts(acc_grav_ts[Date_0517,],order.by=Date_0517)
+acc_grav_ts_1820=xts(acc_grav_ts[Date_1820,],order.by=Date_1820)
 
 acc_lege_ts=xts(acc_lege_pday,order.by=Date)
-acc_lege_ts_0517=acc_lege_ts[Date_0517,]
-acc_lege_ts_1820=acc_lege_ts[Date_1820,]
+acc_lege_ts_0517=xts(acc_lege_ts[Date_0517,],order.by=Date_0517)
+acc_lege_ts_1820=xts(acc_lege_ts[Date_1820,],order.by=Date_1820)
 ##.
 
 
@@ -59,8 +59,8 @@ grav_reg_lin_0517=lm(acc_grav_ts_0517~t_0517)
 grav_reg_quad_0517=lm(acc_grav_ts_0517~t_0517 + I(t_0517^2))
 
 plot(acc_grav_ts_0517,type='l',col='black')
-lines(reg_lin_0517$fitted.values,type='l',col='blue')
-lines(reg_quad_0517$fitted.values,type='l',col='purple')
+lines(grav_reg_lin_0517$fitted.values,type='l',col='blue')
+lines(grav_reg_quad_0517$fitted.values,type='l',col='purple')
 
 print("Moyennes grav sans tendances (regressions lin et quad)")
 mean(acc_grav_ts_0517-grav_reg_lin_0517$fitted.values)
@@ -171,3 +171,137 @@ pacf(sais_ann_0517)
 
 ##0517.
 
+##acc_grav
+
+##1820
+##Tendance
+
+##Moyenne mobile
+window_len=30
+MA_grav_1820=filter(acc_grav_ts_1820,filter=array(1/window_len,dim=window_len),
+                    method = c("convolution"),
+                    sides = 2, circular = FALSE)
+MA_grav_1820=xts(MA_grav_1820,order.by=Date_1820)
+
+plot(acc_grav_ts_1820,type='l',col='black')
+lines(MA_grav_1820,type='l',col='blue')
+
+##Moyenne mobile.
+
+##REG
+t_1820=1:(length((Date_1820)))
+grav_reg_lin_1820=lm(acc_grav_ts_1820~t_1820)
+grav_reg_quad_1820=lm(acc_grav_ts_1820~t_1820 + I(t_1820^2))
+
+plot(acc_grav_ts_1820,type='l',col='black')
+lines(grav_reg_lin_1820$fitted.values,type='l',col='blue')
+lines(grav_reg_quad_1820$fitted.values,type='l',col='purple')
+
+print("Moyennes grav sans tendances (regressions lin et quad)")
+mean(acc_grav_ts_1820-grav_reg_lin_1820$fitted.values)
+mean(acc_grav_ts_1820-grav_reg_quad_1820$fitted.values)
+##REG.
+##Base de splines
+spl_1820=gam(acc_grav_ts_1820~s(t_1820,k=2))
+tend_spl_1820=xts(spl_1820$fitted,order.by=Date_1820)
+plot(acc_grav_ts_1820,type='l',col='black')
+lines(tend_spl_1820,type='l',col='blue')
+##Base de splines.
+##Tendance.
+
+##Saisonnalité
+#untend_ts_1820=acc_grav_ts-grav_reg_lin_1820$fitted.values
+untend_ts_1820=acc_grav_ts-grav_reg_quad_1820$fitted.values ##pacf meilleur à lafin
+
+##Moyenne mobile
+sais_week_1820=filter(untend_ts_1820,filter=array(1/7,dim=7),
+                      method = c("convolution"),
+                      sides = 2, circular = TRUE)
+sais_week_1820=xts(sais_week_1820,order.by=Date_1820)
+
+
+sais_mon_1820=filter(sais_week_1820,filter=array(1/30,dim=30),
+                     method = c("convolution"),
+                     sides = 2, circular = TRUE)
+sais_mon_1820=xts(sais_mon_1820,order.by=Date_1820)
+
+#sais_ann_1820=filter(sais_mon_1820,filter=array(1/365,dim=365), #à décommenter pour enlever les mois !
+sais_ann_1820=filter(sais_week_1820,filter=array(1/365,dim=365),
+                     method= c("convolution"),
+                     sides =2, circular=TRUE)
+
+sais_ann_1820=xts(sais_ann_1820,order.by=Date_1820)
+
+
+plot(untend_ts_1820,type="l",col="black")
+lines(sais_week_1820,type="l",col="purple")
+lines(sais_mon_1820,type="l",col="blue")
+lines(sais_ann_1820,type="l",col="red")
+
+
+pacf(sais_ann_1820)
+##Moyenne mobile.
+
+##Saisonnalité.
+
+##acc_grav.
+
+
+##acc_lege
+
+##Tendance
+
+##REG
+t_1820=1:(length((Date_1820)))
+lege_reg_lin_1820=lm(acc_lege_ts_1820~t_1820)
+lege_reg_quad_1820=lm(acc_lege_ts_1820~t_1820 + I(t_1820^2))
+
+plot(acc_lege_ts_1820,type='l',col='black')
+lines(lege_reg_lin_1820$fitted.values,type='l',col='blue')
+lines(lege_reg_quad_1820$fitted.values,type='l',col='purple')
+
+print("Moyennes lege sans tendances (regressions lin et quad)")
+mean(acc_lege_ts_1820-lege_reg_lin_1820$fitted.values)
+mean(acc_lege_ts_1820-lege_reg_quad_1820$fitted.values)
+##REG.
+
+##Tendance.
+
+
+##Saisonnalité
+#untend_ts_1820=acc_lege_ts-lege_reg_lin_1820$fitted.values
+untend_ts_1820=acc_lege_ts-lege_reg_quad_1820$fitted.values 
+
+##Moyenne mobile
+sais_week_1820=filter(untend_ts_1820,filter=array(1/7,dim=7),
+                      method = c("convolution"),
+                      sides = 2, circular = TRUE)
+sais_week_1820=xts(sais_week_1820,order.by=Date_1820)
+
+
+sais_mon_1820=filter(sais_week_1820,filter=array(1/30,dim=30),
+                     method = c("convolution"),
+                     sides = 2, circular = TRUE)
+sais_mon_1820=xts(sais_mon_1820,order.by=Date_1820)
+
+sais_ann_1820=filter(sais_mon_1820,filter=array(1/365,dim=365),
+                     method= c("convolution"),
+                     sides =2, circular=TRUE)
+
+sais_ann_1820=xts(sais_ann_1820,order.by=Date_1820)
+
+
+plot(untend_ts_1820,type="l",col="black")
+lines(sais_week_1820,type="l",col="purple")
+lines(sais_mon_1820,type="l",col="blue")
+lines(sais_ann_1820,type="l",col="red")
+
+
+pacf(sais_ann_1820)
+##Moyenne mobile.
+
+##Saisonnalité.
+
+##acc_lege.
+
+##1820.
