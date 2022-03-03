@@ -28,6 +28,10 @@ Date_1820=seq.POSIXt(date2,date3, by = "day")
 acc_grav_ts=xts(acc_grav_pday,order.by=Date)
 acc_grav_ts_0517=acc_grav_ts[Date_0517,]
 acc_grav_ts_1820=acc_grav_ts[Date_1820,]
+
+acc_lege_ts=xts(acc_lege_pday,order.by=Date)
+acc_lege_ts_0517=acc_lege_ts[Date_0517,]
+acc_lege_ts_1820=acc_lege_ts[Date_1820,]
 ##.
 
 
@@ -51,12 +55,16 @@ lines(MA_grav_0517,type='l',col='blue')
 
 ##REG
 t_0517=1:(length((Date_0517)))
-reg_lin_0517=lm(acc_grav_ts_0517~t_0517)
-reg_quad_0517=lm(acc_grav_ts_0517~t_0517 + I(t_0517^2))
+grav_reg_lin_0517=lm(acc_grav_ts_0517~t_0517)
+grav_reg_quad_0517=lm(acc_grav_ts_0517~t_0517 + I(t_0517^2))
 
 plot(acc_grav_ts_0517,type='l',col='black')
 lines(reg_lin_0517$fitted.values,type='l',col='blue')
 lines(reg_quad_0517$fitted.values,type='l',col='purple')
+
+print("Moyennes grav sans tendances (regressions lin et quad)")
+mean(acc_grav_ts_0517-grav_reg_lin_0517$fitted.values)
+mean(acc_grav_ts_0517-grav_reg_quad_0517$fitted.values)
 ##REG.
 ##Base de splines
 spl_0517=gam(acc_grav_ts_0517~s(t_0517,k=2))
@@ -67,8 +75,8 @@ lines(tend_spl_0517,type='l',col='blue')
 ##Tendance.
 
 ##Saisonnalité
-#untend_ts_0517=acc_grav_ts-reg_lin_0517$fitted.values
-untend_ts_0517=acc_grav_ts-reg_quad_0517$fitted.values ##pacf meilleur à lafin
+#untend_ts_0517=acc_grav_ts-grav_reg_lin_0517$fitted.values
+untend_ts_0517=acc_grav_ts-grav_reg_quad_0517$fitted.values ##pacf meilleur à lafin
 
 ##Moyenne mobile
 sais_week_0517=filter(untend_ts_0517,filter=array(1/7,dim=7),
@@ -80,6 +88,65 @@ sais_week_0517=xts(sais_week_0517,order.by=Date_0517)
 sais_mon_0517=filter(sais_week_0517,filter=array(1/30,dim=30),
                     method = c("convolution"),
                     sides = 2, circular = TRUE)
+sais_mon_0517=xts(sais_mon_0517,order.by=Date_0517)
+
+#sais_ann_0517=filter(sais_mon_0517,filter=array(1/365,dim=365), #à décommenter pour enlever les mois !
+sais_ann_0517=filter(sais_week_0517,filter=array(1/365,dim=365),
+                     method= c("convolution"),
+                     sides =2, circular=TRUE)
+
+sais_ann_0517=xts(sais_ann_0517,order.by=Date_0517)
+
+
+plot(untend_ts_0517,type="l",col="black")
+lines(sais_week_0517,type="l",col="purple")
+lines(sais_mon_0517,type="l",col="blue")
+lines(sais_ann_0517,type="l",col="red")
+
+
+pacf(sais_ann_0517)
+##Moyenne mobile.
+
+##Saisonnalité.
+
+##acc_grav.
+
+
+##acc_lege
+
+##Tendance
+
+##REG
+t_0517=1:(length((Date_0517)))
+lege_reg_lin_0517=lm(acc_lege_ts_0517~t_0517)
+lege_reg_quad_0517=lm(acc_lege_ts_0517~t_0517 + I(t_0517^2))
+
+plot(acc_lege_ts_0517,type='l',col='black')
+lines(lege_reg_lin_0517$fitted.values,type='l',col='blue')
+lines(lege_reg_quad_0517$fitted.values,type='l',col='purple')
+
+print("Moyennes lege sans tendances (regressions lin et quad)")
+mean(acc_lege_ts_0517-lege_reg_lin_0517$fitted.values)
+mean(acc_lege_ts_0517-lege_reg_quad_0517$fitted.values)
+##REG.
+
+##Tendance.
+
+
+##Saisonnalité
+#untend_ts_0517=acc_lege_ts-lege_reg_lin_0517$fitted.values
+untend_ts_0517=acc_lege_ts-lege_reg_quad_0517$fitted.values 
+
+##Moyenne mobile
+sais_week_0517=filter(untend_ts_0517,filter=array(1/7,dim=7),
+                      method = c("convolution"),
+                      sides = 2, circular = TRUE)
+sais_week_0517=xts(sais_week_0517,order.by=Date_0517)
+
+
+sais_mon_0517=filter(sais_week_0517,filter=array(1/30,dim=30),
+                     method = c("convolution"),
+                     sides = 2, circular = TRUE)
 sais_mon_0517=xts(sais_mon_0517,order.by=Date_0517)
 
 sais_ann_0517=filter(sais_mon_0517,filter=array(1/365,dim=365),
@@ -99,7 +166,8 @@ pacf(sais_ann_0517)
 ##Moyenne mobile.
 
 ##Saisonnalité.
-##0517.
-##acc_grav.
 
+##acc_lege.
+
+##0517.
 
