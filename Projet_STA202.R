@@ -106,6 +106,31 @@ curr_dat2 = unpackk2(curr_dat2)
 
 curr_dat2 = subset(curr_dat2, select = c(Num_Acc,grav,date))# -c(an, mois, jour, hrmn))
 
+###
+
+f_grav2 = subset(curr_dat2,(grav==2|grav==3))
+f_lege2 = subset(curr_dat2,(grav==1|grav==4))
+
+str_grav_days2 = format(f_grav2$date, "%d/%m/%Y")
+str_lege_days2 = format(f_lege2$date, "%d/%m/%Y")
+
+acc_grav_pday2 = tapply(f_grav2$Num_Acc, as.factor(str_grav_days2), length)
+acc_lege_pday2 = tapply(f_lege2$Num_Acc, as.factor(str_lege_days2), length)
+
+days2 = names(acc_grav_pday2)
+days2 = strptime(days2, "%d/%m/%Y")
+
+acc_grav_pday2 = acc_grav_pday2[order(days2)]
+acc_lege_pday2 = acc_lege_pday2[order(days2)]
+
+days2 = days[order(days2)]
+
+saveRDS(acc_grav_pday2,file="acc_grav_pday2.rds")
+saveRDS(acc_lege_pday2,file="acc_lege_pday2.rds")
+saveRDS(days2,file="days2.rds")
+
+###
+
 f_dat = rbind(curr_dat, curr_dat2)
 
 ###
@@ -138,8 +163,10 @@ legend(100,95,legend=c("Legers","Graves"),col=c("green","red"),lty=1:2, cex=0.8)
 
 
 
+
 filter_s = strptime("01/01/2005", "%d/%m/%Y")
 filter_e = strptime("31/01/2020", "%d/%m/%Y")
+
 cond = (days >= filter_s & days <= filter_e)
 s_days = subset(days, cond)
 
@@ -147,16 +174,14 @@ s_acc_grav = subset(acc_grav_pday, cond)
 s_acc_lege = subset(acc_lege_pday, cond)
 #plot(s_days, s_acc, type="l", lab=c(5, 5, 7), cex.axis=0.5)
 
+
 plot(s_days, s_acc_lege, type="l", cex.axis=0.5,col="darkgreen")
 lines(s_days, s_acc_grav, type="l", cex.axis=0.5,col="red")
+
 #weekdays(s_days)
 #test_day = strptime("28/03/2005", "%d/%m/%Y")
 #weekdays(test_day)
 
-###
-reg=lm(acc_grav_pday~acc_lege_pday)
-summary(reg)
-###
 
 saveRDS(acc_grav_pday,file="acc_grav_pday.rds")
 saveRDS(acc_lege_pday,file="acc_lege_pday.rds")
