@@ -32,9 +32,9 @@ acc_grav_ts_1820=xts(acc_grav_ts[Date_1820,],order.by=Date_1820)
 acc_lege_ts=xts(acc_lege_pday,order.by=Date)
 acc_lege_ts_0517=xts(acc_lege_ts[Date_0517,],order.by=Date_0517)
 acc_lege_ts_1820=xts(acc_lege_ts[Date_1820,],order.by=Date_1820)
+
+acc_tot_ts_1820 = acc_grav_ts_1820 + acc_lege_ts_1820
 ##.
-
-
 
 ##acc_grav
 
@@ -304,4 +304,9 @@ pacf(sais_ann_1820)
 
 ##acc_lege.
 
-##1820.
+##1820 : graves + legers
+
+
+plot(Date_1820, acc_tot_1820_ts, type="l", cex.axis=0.5,col="darkgreen")
+
+
