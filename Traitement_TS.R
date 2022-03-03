@@ -65,6 +65,40 @@ plot(acc_grav_ts_0517,type='l',col='black')
 lines(tend_spl_0517,type='l',col='blue')
 ##Base de splines.
 ##Tendance.
+
+##Saisonnalité
+#untend_ts_0517=acc_grav_ts-reg_lin_0517$fitted.values
+untend_ts_0517=acc_grav_ts-reg_quad_0517$fitted.values ##pacf meilleur à lafin
+
+##Moyenne mobile
+sais_week_0517=filter(untend_ts_0517,filter=array(1/7,dim=7),
+                     method = c("convolution"),
+                     sides = 2, circular = TRUE)
+sais_week_0517=xts(sais_week_0517,order.by=Date_0517)
+
+
+sais_mon_0517=filter(sais_week_0517,filter=array(1/30,dim=30),
+                    method = c("convolution"),
+                    sides = 2, circular = TRUE)
+sais_mon_0517=xts(sais_mon_0517,order.by=Date_0517)
+
+sais_ann_0517=filter(sais_mon_0517,filter=array(1/365,dim=365),
+                     method= c("convolution"),
+                     sides =2, circular=TRUE)
+
+sais_ann_0517=xts(sais_ann_0517,order.by=Date_0517)
+
+
+plot(untend_ts_0517,type="l",col="black")
+lines(sais_week_0517,type="l",col="purple")
+lines(sais_mon_0517,type="l",col="blue")
+lines(sais_ann_0517,type="l",col="red")
+
+
+pacf(sais_ann_0517)
+##Moyenne mobile.
+
+##Saisonnalité.
 ##0517.
 ##acc_grav.
 
