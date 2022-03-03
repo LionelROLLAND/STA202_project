@@ -46,7 +46,7 @@ cara_2015 = read.csv("caracteristiques_2015.csv")
 cara_2016 = read.csv("caracteristiques_2016.csv")
 cara_2017 = read.csv("caracteristiques-2017.csv")
 cara_2018 = read.csv("caracteristiques-2018.csv")
-cara_2019 = read.csv2("caracteristiques-2019.csv")#########"
+cara_2019 = read.csv2("caracteristiques-2019.csv")######### pas le même séparateur
 cara_2020 = read.csv2("caracteristiques-2020.csv")#########"""
 ###
 usag_2005 = read.csv("usagers_2005.csv")
@@ -109,7 +109,7 @@ curr_dat2 = subset(curr_dat2, select = c(Num_Acc,grav,date))# -c(an, mois, jour,
 f_dat = rbind(curr_dat, curr_dat2)
 
 ###
-f_grav = subset(f_dat,(grav==2|grav==3))
+f_grav = subset(f_dat,(grav==3))####################################"
 f_lege = subset(f_dat,(grav==1|grav==4))
 ###
 
@@ -130,12 +130,16 @@ acc_lege_pday = acc_lege_pday[order(days)]
 days = days[order(days)]
 
 plot(days, acc_grav_pday+acc_lege_pday, type="l",col="black")
+
+plot(days, acc_lege_pday, type="l",col="darkgreen", ylab="Nb d'accidenté",xlab="Jours")
+
 lines(days, acc_grav_pday, type="l",col="red")
-lines(days, acc_lege_pday, type="l",col="darkgreen")
+legend(100,95,legend=c("Legers","Graves"),col=c("green","red"),lty=1:2, cex=0.8)
 
 
-filter_s = strptime("01/01/2020", "%d/%m/%Y")
-filter_e = strptime("31/12/2020", "%d/%m/%Y")
+
+filter_s = strptime("01/01/2005", "%d/%m/%Y")
+filter_e = strptime("31/01/2020", "%d/%m/%Y")
 cond = (days >= filter_s & days <= filter_e)
 s_days = subset(days, cond)
 
@@ -143,7 +147,7 @@ s_acc_grav = subset(acc_grav_pday, cond)
 s_acc_lege = subset(acc_lege_pday, cond)
 #plot(s_days, s_acc, type="l", lab=c(5, 5, 7), cex.axis=0.5)
 
-plot(s_days, s_acc_lege, type="l", cex.axis=0.5,ylim=c(50,650),col="darkgreen")
+plot(s_days, s_acc_lege, type="l", cex.axis=0.5,col="darkgreen")
 lines(s_days, s_acc_grav, type="l", cex.axis=0.5,col="red")
 #weekdays(s_days)
 #test_day = strptime("28/03/2005", "%d/%m/%Y")
