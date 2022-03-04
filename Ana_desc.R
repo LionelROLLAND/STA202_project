@@ -39,6 +39,10 @@ acc_tot_ts_1820 = acc_grav_ts_1820 + acc_lege_ts_1820
 
 ##Analyse descriptive
 
+###Accidentes legers 2005-2017
+
+plot(acc_lege_ts_0517)
+
 ###Histogramme + loi
 
 hist(acc_lege_ts_0517, breaks = 20, freq=FALSE)
@@ -85,6 +89,8 @@ axis(side=1, labels=mo_x, at=c(1:12), cex.axis=0.8)
 
 ####accidentes graves 2005 - 2017
 
+plot(acc_grav_ts_0517)
+
 ###Histogramme + loi
 
 hist(acc_grav_ts_0517, breaks = 30, freq=FALSE)
@@ -119,6 +125,8 @@ axis(side=1, labels=mo_x, at=c(1:12), cex.axis=0.8)
 
 ##Accidentes 2018 - 2020
 
+plot(acc_tot_ts_1820)
+
 ###Histogramme + loi
 
 hist(acc_tot_ts_1820, breaks = 30, freq = FALSE)
@@ -139,7 +147,7 @@ acf(acc_grav_pday2+acc_lege_pday2, 40)
 wd = weekdays(days2)
 week_1820 = tapply(acc_grav_pday2+acc_lege_pday2, INDEX=wd, FUN=sum)
 week_1820 = grav_week_0517[order(ord)]
-plot(week_1820, xaxt="n", ylim=c(0,40000))
+plot(week_1820, xaxt="n", ylim=c(0,70000))
 axis(side=1, labels=wd_x, at=c(1:7), cex.axis=0.8)
 
 ###Dangerosite par mois
@@ -149,3 +157,4 @@ mo_1820 = tapply(acc_grav_pday2+acc_lege_pday2, INDEX=mo, FUN=sum)
 mo_1820 = mo_1820[order(ord_mo)]
 plot(grav_mo_0517, xaxt="n", ylim=c(0,50000))
 axis(side=1, labels=mo_x, at=c(1:12), cex.axis=0.8)
+
