@@ -307,6 +307,24 @@ pacf(sais_ann_1820)
 ##1820 : graves + legers
 
 
-plot(Date_1820, acc_tot_1820_ts, type="l", cex.axis=0.5,col="darkgreen")
+plot(Date_1820, acc_tot_ts_1820, type="l", cex.axis=0.5,col="darkgreen")
+
+##Desaisonnalisation par differenciation :
 
 
+acc_1820_des = diff(acc_tot_ts_1820, lag = 1, differences = 1)
+plot(Date_1820, acc_1820_des, type="l", cex.axis=0.5,col="blue")
+
+pacf(as.vector(acc_1820_des), na.action=na.pass)
+acc_1820_des = diff(acc_1820_des, lag = 6, differences = 1)
+plot(Date_1820, acc_1820_des, type="l", cex.axis=0.5,col="blue")
+
+pacf(as.vector(acc_1820_des), na.action=na.pass)
+acc_1820_des = diff(acc_1820_des, lag = 7, differences = 1)
+plot(Date_1820, acc_1820_des, type="l", cex.axis=0.5,col="blue")
+
+pacf(as.vector(acc_1820_des), na.action=na.pass)
+acc_1820_des = diff(acc_1820_des, lag = 5, differences = 1)
+plot(Date_1820, acc_1820_des, type="l", cex.axis=0.5,col="blue")
+
+pacf(as.vector(acc_1820_des), na.action=na.pass)
