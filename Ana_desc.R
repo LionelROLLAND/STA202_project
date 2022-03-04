@@ -99,7 +99,7 @@ lines(dgamma(test, shape = k_chap, scale = theta_chap))
 
 acc_grav_0517 = subset(acc_grav_pday, cond)
 pacf(acc_grav_0517, 40)
-pacf(acc_grav_0517, 366)
+pacf(acc_grav_0517, 400)
 acf(acc_grav_0517, 40)
 
 ###Dangerosite par jour de la semaine
