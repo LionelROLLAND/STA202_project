@@ -36,6 +36,13 @@ acc_lege_ts_1820=xts(acc_lege_ts[Date_1820,],order.by=Date_1820)
 acc_tot_ts_1820 = acc_grav_ts_1820 + acc_lege_ts_1820
 ##.
 
+##SPECTRUM
+
+freq=spectrum(acc_grav_ts_0517)$freq
+spec=spectrum(acc_grav_ts_0517)$spec
+plot(freq,spec,type="l" )
+
+##.
 ##acc_grav
 
 ##0517
@@ -75,11 +82,30 @@ lines(tend_spl_0517,type='l',col='blue')
 ##Tendance.
 
 ##Saisonnalité
-#untend_ts_0517=acc_grav_ts-grav_reg_lin_0517$fitted.values
-untend_ts_0517=acc_grav_ts-grav_reg_quad_0517$fitted.values ##pacf meilleur à lafin
+
+
+
+#untend_grav_ts_0517=acc_grav_ts-grav_reg_lin_0517$fitted.values
+untend_grav_ts_0517=acc_grav_ts-grav_reg_quad_0517$fitted.values ##pacf meilleur à lafin
+
+
+###FOURIER
+t=1:length(Date_0517)
+reg_decompo=lm(untend_grav_ts_0517 ~  I(cos(2*pi/7*t))   + I(sin(2*pi/7*t))+
+                                     I(cos(2*pi/365*t))  +  I(sin(2*pi/365*t)) ) 
+
+plot(untend_grav_ts_0517)
+lines(reg_decompo$fitted.values,type="l",col="blue")
+plot(untend_grav_ts_0517[,1][(365+1):(365+61)],type="l",col="black")
+lines(reg_decompo$fitted.values[,1][(365+1):(365+61)],type="l",col="blue")
+
+plot(untend_grav_ts_0517-reg_decompo$fitted.values,type="l")
+
+####.
+
 
 ##Moyenne mobile
-sais_week_0517=filter(untend_ts_0517,filter=array(1/7,dim=7),
+sais_week_0517=filter(untend_grav_ts_0517,filter=array(1/7,dim=7),
                      method = c("convolution"),
                      sides = 2, circular = TRUE)
 sais_week_0517=xts(sais_week_0517,order.by=Date_0517)
@@ -98,7 +124,7 @@ sais_ann_0517=filter(sais_week_0517,filter=array(1/365,dim=365),
 sais_ann_0517=xts(sais_ann_0517,order.by=Date_0517)
 
 
-plot(untend_ts_0517,type="l",col="black")
+plot(untend_grav_ts_0517,type="l",col="black")
 lines(sais_week_0517,type="l",col="purple")
 lines(sais_mon_0517,type="l",col="blue")
 lines(sais_ann_0517,type="l",col="red")
@@ -134,11 +160,11 @@ mean(acc_lege_ts_0517-lege_reg_quad_0517$fitted.values)
 
 
 ##Saisonnalité
-#untend_ts_0517=acc_lege_ts-lege_reg_lin_0517$fitted.values
-untend_ts_0517=acc_lege_ts-lege_reg_quad_0517$fitted.values 
+#untend_lege_ts_0517=acc_lege_ts-lege_reg_lin_0517$fitted.values
+untend_lege_ts_0517=acc_lege_ts-lege_reg_quad_0517$fitted.values 
 
 ##Moyenne mobile
-sais_week_0517=filter(untend_ts_0517,filter=array(1/7,dim=7),
+sais_week_0517=filter(untend_lege_ts_0517,filter=array(1/7,dim=7),
                       method = c("convolution"),
                       sides = 2, circular = TRUE)
 sais_week_0517=xts(sais_week_0517,order.by=Date_0517)
@@ -156,7 +182,7 @@ sais_ann_0517=filter(sais_mon_0517,filter=array(1/365,dim=365),
 sais_ann_0517=xts(sais_ann_0517,order.by=Date_0517)
 
 
-plot(untend_ts_0517,type="l",col="black")
+plot(untend_lege_ts_0517,type="l",col="black")
 lines(sais_week_0517,type="l",col="purple")
 lines(sais_mon_0517,type="l",col="blue")
 lines(sais_ann_0517,type="l",col="red")
@@ -210,11 +236,11 @@ lines(tend_spl_1820,type='l',col='blue')
 ##Tendance.
 
 ##Saisonnalité
-#untend_ts_1820=acc_grav_ts-grav_reg_lin_1820$fitted.values
-untend_ts_1820=acc_grav_ts-grav_reg_quad_1820$fitted.values ##pacf meilleur à lafin
+#untend_grav_ts_1820=acc_grav_ts-grav_reg_lin_1820$fitted.values
+untend_grav_ts_1820=acc_grav_ts-grav_reg_quad_1820$fitted.values ##pacf meilleur à lafin
 
 ##Moyenne mobile
-sais_week_1820=filter(untend_ts_1820,filter=array(1/7,dim=7),
+sais_week_1820=filter(untend_grav_ts_1820,filter=array(1/7,dim=7),
                       method = c("convolution"),
                       sides = 2, circular = TRUE)
 sais_week_1820=xts(sais_week_1820,order.by=Date_1820)
@@ -233,7 +259,7 @@ sais_ann_1820=filter(sais_week_1820,filter=array(1/365,dim=365),
 sais_ann_1820=xts(sais_ann_1820,order.by=Date_1820)
 
 
-plot(untend_ts_1820,type="l",col="black")
+plot(untend_grav_ts_1820,type="l",col="black")
 lines(sais_week_1820,type="l",col="purple")
 lines(sais_mon_1820,type="l",col="blue")
 lines(sais_ann_1820,type="l",col="red")
@@ -269,11 +295,11 @@ mean(acc_lege_ts_1820-lege_reg_quad_1820$fitted.values)
 
 
 ##Saisonnalité
-#untend_ts_1820=acc_lege_ts-lege_reg_lin_1820$fitted.values
-untend_ts_1820=acc_lege_ts-lege_reg_quad_1820$fitted.values 
+#untend_lege_ts_1820=acc_lege_ts-lege_reg_lin_1820$fitted.values
+untend_lege_ts_1820=acc_lege_ts-lege_reg_quad_1820$fitted.values 
 
 ##Moyenne mobile
-sais_week_1820=filter(untend_ts_1820,filter=array(1/7,dim=7),
+sais_week_1820=filter(untend_lege_ts_1820,filter=array(1/7,dim=7),
                       method = c("convolution"),
                       sides = 2, circular = TRUE)
 sais_week_1820=xts(sais_week_1820,order.by=Date_1820)
@@ -291,7 +317,7 @@ sais_ann_1820=filter(sais_mon_1820,filter=array(1/365,dim=365),
 sais_ann_1820=xts(sais_ann_1820,order.by=Date_1820)
 
 
-plot(untend_ts_1820,type="l",col="black")
+plot(untend_lege_ts_1820,type="l",col="black")
 lines(sais_week_1820,type="l",col="purple")
 lines(sais_mon_1820,type="l",col="blue")
 lines(sais_ann_1820,type="l",col="red")
